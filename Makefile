@@ -1,5 +1,6 @@
 TEMPLATE_DIR=templates
 BUILD_DIR_PREFIX=build_
+TIMEOUT=240
 
 .PHONY: build pyenv setup dev
 
@@ -11,7 +12,7 @@ default:
 	@echo ' dev 						Setup development environment'
 
 build:
-	env PACKER_LOG=1 packer build ${TEMPLATE_DIR}/${NAME}.json
+	env PACKER_LOG=1 timeout ${TIMEOUT} packer build ${TEMPLATE_DIR}/${NAME}.json
 
 pyenv:
 	pyenv install -s
