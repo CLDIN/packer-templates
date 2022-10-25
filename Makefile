@@ -1,6 +1,6 @@
 TEMPLATE_DIR=templates
 BUILD_DIR_PREFIX=build_
-TIMEOUT=240
+TIMEOUT=240m
 
 .PHONY: build pyenv setup dev
 
