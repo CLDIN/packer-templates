@@ -50,6 +50,11 @@
         },
         {
             "type": "file",
+            "source": "files/generic/99-hotPlugCPU.rules",
+            "destination": "/etc/udev/rules.d/99-hotPlugCPU.rules"
+        },
+        {
+            "type": "file",
             "source": "files/centos/90-dns-none.conf",
             "destination": "/etc/NetworkManager/conf.d/90-dns-none.conf"
         },
