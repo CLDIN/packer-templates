@@ -64,6 +64,11 @@
             "destination": "/etc/sysctl.d/99-disable-ipv6-tempaddr.conf"
         },
         {
+            "type": "file",
+            "source": "files/generic/99-hotPlugCPU.rules",
+            "destination": "/etc/udev/rules.d/99-hotPlugCPU.rules"
+        },
+        {
             "type": "shell",
             "scripts":
             [
