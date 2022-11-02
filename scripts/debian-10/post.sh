@@ -39,6 +39,9 @@ passwd --lock --delete root
 sed -i 's|^ *PermitRootLogin .*|PermitRootLogin yes|g' /etc/ssh/sshd_config
 sed -i 's|^ *PasswordAuthentication .*|PasswordAuthentication no|g' /etc/ssh/sshd_config
 
+echo "Enable hot adding memory"
+echo "online" > /sys/devices/system/memory/auto_online_blocks
+
 unset HISTFILE
 
 sync
