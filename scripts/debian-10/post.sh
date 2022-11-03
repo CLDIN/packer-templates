@@ -40,7 +40,8 @@ sed -i 's|^ *PermitRootLogin .*|PermitRootLogin yes|g' /etc/ssh/sshd_config
 sed -i 's|^ *PasswordAuthentication .*|PasswordAuthentication no|g' /etc/ssh/sshd_config
 
 echo "Enable hot adding memory"
-echo "online" > /sys/devices/system/memory/auto_online_blocks
+sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/ s|"$| memhp_default_state=online"|g' /etc/default/grub
+update-grub
 
 unset HISTFILE
 
