@@ -1,8 +1,9 @@
 {
     "variables": {
-        "name": "ubuntu-20.04",
-        "url": "http://compute.o.auroraobjects.eu/iso/ubuntu-20.04.3-live-server-amd64.iso",
-        "iso_checksum": "sha256:f8e3086f3cea0fb3fefb29937ab5ed9d19e767079633960ccb50e76153effc98"
+        "name": "debian-12",
+        "url": "http://compute.o.auroraobjects.eu/iso/debian-12.6.0-amd64-netinst.iso",
+        "iso_checksum": "sha256:ade3a4acc465f59ca2496344aab72455945f3277a52afc5a2cae88cdc370fa12",
+        "boot_command": "<wait5><esc>auto preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed/debian-12.preseed<enter>"
     },
     "builders": [
         {
@@ -19,20 +20,13 @@
             "disk_interface": "virtio-scsi",
             "disk_discard": "unmap",
             "disk_compression": true,
-            "boot_wait": "2s",
-            "boot_command": [
-                "<enter><enter><f6><esc><wait> ",
-                "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-                "<enter><wait>"
-            ],
+            "boot_command": "{{user `boot_command`}}",
             "communicator": "ssh",
             "vnc_bind_address": "[::]",
-            "ssh_wait_timeout": "45m",
+            "ssh_wait_timeout": "30m",
             "ssh_username": "root",
-            "ssh_password": "mL9QHd95JrCdhc5V",
-            "ssh_handshake_attempts": "300",
-            "pause_before_connecting": "2m",
-            "http_directory": "files/ubuntu-20.04",
+            "ssh_password": "4pDfYXPDfTrmPy9U",
+            "http_directory": "files",
             "http_port_min": 8000,
             "http_port_max": 8100,
             "output_directory": "build_{{user `name`}}"
@@ -41,7 +35,7 @@
     "provisioners": [
         {
             "type": "file",
-            "source": "files/apt/ubuntu-20.04.sources",
+            "source": "files/apt/debian-12.sources",
             "destination": "/etc/apt/sources.list"
         },
         {
@@ -53,11 +47,6 @@
             "type": "file",
             "source": "files/generic/watchdog.conf",
             "destination": "/etc/watchdog.conf"
-        },
-        {
-            "type": "file",
-            "source": "files/ubuntu-20.04/01-netcfg.yaml",
-            "destination": "/etc/netplan/01-netcfg.yaml"
         },
         {
             "type": "file",
@@ -73,17 +62,9 @@
             "type": "shell",
             "scripts":
             [
-                "scripts/ubuntu-20.04/remove-swap.sh"
+                "scripts/debian-12/post.sh"
             ],
             "execute_command": "sh '{{.Path}}'"
-        },
-        {
-            "type": "shell",
-            "scripts":
-            [
-                "scripts/ubuntu-20.04/post.sh"
-            ],
-            "execute_command": "sudo sh '{{.Path}}'"
         },
         {
             "type": "shell",

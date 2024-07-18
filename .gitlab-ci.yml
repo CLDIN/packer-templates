@@ -72,27 +72,38 @@ publish:almalinux-8:
     variables:
         TEMPLATE_NAME: "almalinux-8"
 
-# Centos 7
-build:centos-7:
+# AlmaLinux 9
+build:almalinux-9:
     extends: .build_template
     variables:
-        TEMPLATE_NAME: "centos-7"
+        TEMPLATE_NAME: "almalinux-9"
 
-publish:centos-7:
+publish:almalinux-9:
     extends: .upload_template
     variables:
-        TEMPLATE_NAME: "centos-7"
+        TEMPLATE_NAME: "almalinux-9"
 
-# Centos 8
-build:centos-8:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "centos-8"
+# Centos 7 EOL
+# build:centos-7:
+#     extends: .build_template
+#     variables:
+#         TEMPLATE_NAME: "centos-7"
 
-publish:centos-8:
-    extends: .upload_template
-    variables:
-        TEMPLATE_NAME: "centos-8"
+# publish:centos-7:
+#     extends: .upload_template
+#     variables:
+#         TEMPLATE_NAME: "centos-7"
+
+# Centos 8 EOL
+# build:centos-8:
+#     extends: .build_template
+#     variables:
+#         TEMPLATE_NAME: "centos-8"
+
+# publish:centos-8:
+#     extends: .upload_template
+#     variables:
+#         TEMPLATE_NAME: "centos-8"
 
 # CloudLinux 8
 build:cloudlinux-8:
@@ -105,16 +116,16 @@ publish:cloudlinux-8:
     variables:
         TEMPLATE_NAME: "cloudlinux-8"
 
-## Debian 10
-build:debian-10:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "debian-10"
+## Debian 10 EOL
+# build:debian-10:
+#     extends: .build_template
+#     variables:
+#         TEMPLATE_NAME: "debian-10"
 
-publish:debian-10:
-    extends: .upload_template
-    variables:
-        TEMPLATE_NAME: "debian-10"
+# publish:debian-10:
+#     extends: .upload_template
+#     variables:
+#         TEMPLATE_NAME: "debian-10"
 
 ## Debian 11
 build:debian-11:
@@ -126,6 +137,17 @@ publish:debian-11:
     extends: .upload_template
     variables:
         TEMPLATE_NAME: "debian-11"
+
+## Debian 12
+build:debian-12:
+    extends: .build_template
+    variables:
+        TEMPLATE_NAME: "debian-12"
+
+publish:debian-12:
+    extends: .upload_template
+    variables:
+        TEMPLATE_NAME: "debian-12"
 
 ## Ubuntu 18.04
 build:ubuntu-18.04:
@@ -159,3 +181,14 @@ publish:ubuntu-22.04:
     extends: .upload_template
     variables:
         TEMPLATE_NAME: "ubuntu-22.04"
+
+## Ubuntu 24.04
+build:ubuntu-24.04:
+    extends: .build_template
+    variables:
+        TEMPLATE_NAME: "ubuntu-24.04"
+
+publish:ubuntu-24.04:
+    extends: .upload_template
+    variables:
+        TEMPLATE_NAME: "ubuntu-24.04"
