@@ -1,8 +1,9 @@
 {
     "variables": {
-        "name": "ubuntu-20.04",
-        "url": "http://compute.o.auroraobjects.eu/iso/ubuntu-20.04.3-live-server-amd64.iso",
-        "iso_checksum": "sha256:f8e3086f3cea0fb3fefb29937ab5ed9d19e767079633960ccb50e76153effc98"
+        "name": "almalinux-9",
+        "url": "http://compute.o.auroraobjects.eu/iso/AlmaLinux-9.4-x86_64-boot.iso",
+        "iso_checksum": "sha256:1e5d7da3d84d5d9a5a1177858a5df21b868390bfccf7f0f419b1e59acc293160",
+        "boot_command": "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/almalinux-9.ks<enter><wait>"
     },
     "builders": [
         {
@@ -14,36 +15,27 @@
             "accelerator": "kvm",
             "headless": true,
             "cpus": 2,
+            "qemuargs": [
+                ["-cpu", "host,+nx"]
+            ],
             "memory": 2048,
             "disk_size": "8G",
             "disk_interface": "virtio-scsi",
             "disk_discard": "unmap",
             "disk_compression": true,
-            "boot_wait": "2s",
-            "boot_command": [
-                "<enter><enter><f6><esc><wait> ",
-                "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-                "<enter><wait>"
-            ],
+            "boot_command": "{{user `boot_command`}}",
             "communicator": "ssh",
             "vnc_bind_address": "[::]",
-            "ssh_wait_timeout": "45m",
+            "ssh_wait_timeout": "30m",
             "ssh_username": "root",
-            "ssh_password": "mL9QHd95JrCdhc5V",
-            "ssh_handshake_attempts": "300",
-            "pause_before_connecting": "2m",
-            "http_directory": "files/ubuntu-20.04",
+            "ssh_password": "RvHtrfTwCjTnhHrD",
+            "http_directory": "files",
             "http_port_min": 8000,
             "http_port_max": 8100,
             "output_directory": "build_{{user `name`}}"
         }
     ],
     "provisioners": [
-        {
-            "type": "file",
-            "source": "files/apt/ubuntu-20.04.sources",
-            "destination": "/etc/apt/sources.list"
-        },
         {
             "type": "file",
             "source": "files/generic/cloud-init.cfg",
@@ -56,11 +48,6 @@
         },
         {
             "type": "file",
-            "source": "files/ubuntu-20.04/01-netcfg.yaml",
-            "destination": "/etc/netplan/01-netcfg.yaml"
-        },
-        {
-            "type": "file",
             "source": "files/generic/99-disable-ipv6-tempaddr.conf",
             "destination": "/etc/sysctl.d/99-disable-ipv6-tempaddr.conf"
         },
@@ -70,20 +57,27 @@
             "destination": "/etc/udev/rules.d/99-hotPlugCPU.rules"
         },
         {
-            "type": "shell",
-            "scripts":
-            [
-                "scripts/ubuntu-20.04/remove-swap.sh"
-            ],
-            "execute_command": "sh '{{.Path}}'"
+            "type": "file",
+            "source": "files/centos/90-dns-none.conf",
+            "destination": "/etc/NetworkManager/conf.d/90-dns-none.conf"
+        },
+        {
+            "type": "file",
+            "source": "files/centos/90-dhcp-client.conf",
+            "destination": "/etc/NetworkManager/conf.d/90-dhcp-client.conf"
+        },
+        {
+            "type": "file",
+            "source": "files/centos/grub",
+            "destination": "/etc/default/grub"
         },
         {
             "type": "shell",
             "scripts":
             [
-                "scripts/ubuntu-20.04/post.sh"
+                "scripts/almalinux-9/post.sh"
             ],
-            "execute_command": "sudo sh '{{.Path}}'"
+            "execute_command": "sh '{{.Path}}'"
         },
         {
             "type": "shell",

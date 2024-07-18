@@ -1,0 +1,30 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US
+  keyboard:
+    layout: us
+    variant: ""
+  apt:
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64, i386]
+      uri: http://nl3.archive.ubuntu.com/
+  storage:
+    layout:
+      name: direct
+  identity:
+    hostname: ubuntu2404
+    username: ubuntu
+    password: "$6$pLPVIGqqsVc4NZJ3$AcOuajvnSgIuM9D4JXkUjCyiFpBPgXDrg94NMuklppjl9u9dtPRbedqpS8zdH0.iK7iEL33yBb9kiBt2MPY9u/"
+  ssh:
+    allow-pw: true
+    install-server: true
+  user-data:
+    disable_root: false
+    runcmd:
+        - 'echo "root:58p5wMfpyTQhqa4Q"|chpasswd'
+  late-commands:
+    - 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /target/etc/sudoers.d/ubuntu'
+    - 'sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /target/etc/ssh/sshd_config'
+    - 'echo i6300esb >> /target/etc/modules'
