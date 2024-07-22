@@ -19,6 +19,10 @@ systemctl enable cloud-init cloud-config fstrim.timer qemu-guest-agent
 echo "Generating GRUB configuration"
 grub2-mkconfig -o /boot/grub2/grub.cfg
 
+#[cloudinit dhcp/datasource issue](https://github.com/canonical/cloud-init/issues/5378)
+echo "Workaround cloud-init issue 5378"
+sed -i "s/    lease_file = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/    latest_address = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/" /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py
+
 echo "Cleaning up cloud-init"
 find /var/log -type f -name 'cloud-init*.log' -print -delete
 cloud-init clean -s -l
