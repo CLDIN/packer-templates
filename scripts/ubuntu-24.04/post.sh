@@ -47,6 +47,9 @@ find /var/log/ -type f -name 'cloud-init*.log' -print -delete
 echo "Removing default user ubuntu"
 deluser ubuntu
 
+echo "Cleanup sources in extra file, already present in mainfile"
+rm -f /etc/apt/sources.list.d/ubuntu.sources
+
 echo "Delete root password and lock account"
 passwd --lock --delete root
 sed -i 's|^ *PermitRootLogin .*|PermitRootLogin yes|g' /etc/ssh/sshd_config
