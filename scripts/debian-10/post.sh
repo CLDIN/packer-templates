@@ -43,6 +43,9 @@ echo "Enable hot adding memory"
 sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/ s|"$| memhp_default_state=online"|g' /etc/default/grub
 update-grub
 
+echo "Deleting existing ssh host keys"
+rm -f /etc/ssh/ssh_host*
+
 unset HISTFILE
 
 sync

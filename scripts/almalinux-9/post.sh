@@ -31,6 +31,9 @@ passwd --lock root
 sed -i 's|^ *PermitRootLogin .*|PermitRootLogin yes|g' /etc/ssh/sshd_config
 sed -i 's|^ *PasswordAuthentication .*|PasswordAuthentication no|g' /etc/ssh/sshd_config
 
+echo "Deleting existing ssh host keys"
+rm -f /etc/ssh/ssh_host*
+
 unset HISTFILE
 
 sync
