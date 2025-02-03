@@ -23,6 +23,7 @@ default:
     script:
         - make build NAME=${TEMPLATE_NAME}
     rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
           changes:
             - .gitlab-ci.yml
