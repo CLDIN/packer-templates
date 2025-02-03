@@ -23,7 +23,8 @@ default:
     script:
         - make build NAME=${TEMPLATE_NAME}
     rules:
-        - changes:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          changes:
             - .gitlab-ci.yml
             - Makefile
             - files/*
@@ -35,13 +36,11 @@ default:
 .upload_template:
     stage: publish
     image: "ubuntu:20.04"
-    only:
-        - master
-    artifacts:
-        paths:
-            - build_${TEMPLATE_NAME}/${TEMPLATE_NAME}.json
-            - build_${TEMPLATE_NAME}/${TEMPLATE_NAME}.checksum
-            - build_${TEMPLATE_NAME}/${TEMPLATE_NAME}.qcow2
+    dependencies:
+        - build:${TEMPLATE_NAME}  # Match the exact build job name
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          when: on_success
     script:
         - find . -type f
         - apt-get update
@@ -59,7 +58,6 @@ default:
         - curl -I http://${OBJECTS_BUCKET}.${OBJECTS_HOST}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.checksum
         - curl -I http://${OBJECTS_BUCKET}.${OBJECTS_HOST}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.json
         - curl -I http://${OBJECTS_BUCKET}.${OBJECTS_HOST}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.qcow2
-        - rm -fr build_${TEMPLATE_NAME}/
 
 # AlmaLinux 8
 build:almalinux-8:
@@ -69,6 +67,8 @@ build:almalinux-8:
 
 publish:almalinux-8:
     extends: .upload_template
+    dependencies:
+        - build:almalinux-8
     variables:
         TEMPLATE_NAME: "almalinux-8"
 
@@ -80,30 +80,10 @@ build:almalinux-9:
 
 publish:almalinux-9:
     extends: .upload_template
+    dependencies:
+        - build:almalinux-9
     variables:
         TEMPLATE_NAME: "almalinux-9"
-
-# Centos 7 EOL
-# build:centos-7:
-#     extends: .build_template
-#     variables:
-#         TEMPLATE_NAME: "centos-7"
-
-# publish:centos-7:
-#     extends: .upload_template
-#     variables:
-#         TEMPLATE_NAME: "centos-7"
-
-# Centos 8 EOL
-# build:centos-8:
-#     extends: .build_template
-#     variables:
-#         TEMPLATE_NAME: "centos-8"
-
-# publish:centos-8:
-#     extends: .upload_template
-#     variables:
-#         TEMPLATE_NAME: "centos-8"
 
 # CloudLinux 8
 build:cloudlinux-8:
@@ -113,19 +93,10 @@ build:cloudlinux-8:
 
 publish:cloudlinux-8:
     extends: .upload_template
+    dependencies:
+        - build:cloudlinux-8
     variables:
         TEMPLATE_NAME: "cloudlinux-8"
-
-## Debian 10 EOL
-# build:debian-10:
-#     extends: .build_template
-#     variables:
-#         TEMPLATE_NAME: "debian-10"
-
-# publish:debian-10:
-#     extends: .upload_template
-#     variables:
-#         TEMPLATE_NAME: "debian-10"
 
 ## Debian 11
 build:debian-11:
@@ -135,6 +106,8 @@ build:debian-11:
 
 publish:debian-11:
     extends: .upload_template
+    dependencies:
+        - build:debian-11
     variables:
         TEMPLATE_NAME: "debian-11"
 
@@ -146,19 +119,10 @@ build:debian-12:
 
 publish:debian-12:
     extends: .upload_template
+    dependencies:
+        - build:debian-12
     variables:
         TEMPLATE_NAME: "debian-12"
-
-## Ubuntu 18.04
-build:ubuntu-18.04:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "ubuntu-18.04"
-
-publish:ubuntu-18.04:
-    extends: .upload_template
-    variables:
-        TEMPLATE_NAME: "ubuntu-18.04"
 
 ## Ubuntu 20.04
 build:ubuntu-20.04:
@@ -168,6 +132,8 @@ build:ubuntu-20.04:
 
 publish:ubuntu-20.04:
     extends: .upload_template
+    dependencies:
+        - build:ubuntu-20.04
     variables:
         TEMPLATE_NAME: "ubuntu-20.04"
 
@@ -179,6 +145,8 @@ build:ubuntu-22.04:
 
 publish:ubuntu-22.04:
     extends: .upload_template
+    dependencies:
+        - build:ubuntu-22.04
     variables:
         TEMPLATE_NAME: "ubuntu-22.04"
 
@@ -190,5 +158,7 @@ build:ubuntu-24.04:
 
 publish:ubuntu-24.04:
     extends: .upload_template
+    dependencies:
+        - build:ubuntu-24.04
     variables:
         TEMPLATE_NAME: "ubuntu-24.04"
