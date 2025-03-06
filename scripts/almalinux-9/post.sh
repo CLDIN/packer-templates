@@ -9,6 +9,10 @@ echo "Configuring network interface"
 nmcli con add connection.interface-name ens3 type ethernet connection.id ens3
 nmcli connection modify ens3 autoconnect yes
 
+echo "Set NetworkManager global ipv6 address generation mode to eui64"
+echo "[connection]" | tee -a /etc/NetworkManager/NetworkManager.conf
+echo "ipv6.addr-gen-mode=0" | tee -a /etc/NetworkManager/NetworkManager.conf
+
 echo "Configuring DNS"
 find /etc -maxdepth 1 -type l -name 'resolv.conf' -print -delete
 echo "nameserver 2a00:f10:ff04:153::53"|tee /etc/resolv.conf
