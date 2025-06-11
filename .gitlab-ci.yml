@@ -86,6 +86,19 @@ publish:almalinux-9:
     variables:
         TEMPLATE_NAME: "almalinux-9"
 
+# AlmaLinux 10
+build:almalinux-10:
+    extends: .build_template
+    variables:
+        TEMPLATE_NAME: "almalinux-10"
+
+publish:almalinux-10:
+    extends: .upload_template
+    dependencies:
+        - build:almalinux-10
+    variables:
+        TEMPLATE_NAME: "almalinux-10"
+
 # CloudLinux 8
 build:cloudlinux-8:
     extends: .build_template
@@ -98,6 +111,19 @@ publish:cloudlinux-8:
         - build:cloudlinux-8
     variables:
         TEMPLATE_NAME: "cloudlinux-8"
+
+# CloudLinux 9
+build:cloudlinux-9:
+    extends: .build_template
+    variables:
+        TEMPLATE_NAME: "cloudlinux-9"
+
+publish:cloudlinux-9:
+    extends: .upload_template
+    dependencies:
+        - build:cloudlinux-9
+    variables:
+        TEMPLATE_NAME: "cloudlinux-9"
 
 ## Debian 11
 build:debian-11:
