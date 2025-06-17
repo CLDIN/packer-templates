@@ -24,12 +24,12 @@ rootpw --plaintext RvHtrfTwCjTnhHrD
 services --disabled="kdump" --enabled="chronyd,rsyslog,sshd"
 
 # System timezone
-timezone Europe/Amsterdam --isUtc
+timezone Europe/Amsterdam --utc
 
 # Disk partitioning information
 zerombr
 clearpart --none --initlabel
-part / --fstype xfs --fsoptions="rw,noatime" --size=1 --grow
+autopart --nolvm --type plain --fstype xfs --nohome --noboot --noswap
 
 # Enable SELinux
 selinux --enforcing
@@ -61,12 +61,6 @@ wget
 -alsa-*
 -ivtv*
 -iwl*firmware
-%end
-
-%anaconda
-pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
-pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
-pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
 %end
 
 # Post scripts
