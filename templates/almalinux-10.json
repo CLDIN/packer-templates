@@ -3,7 +3,7 @@
         "name": "almalinux-10",
         "url": "http://compute.o.auroraobjects.eu/iso/AlmaLinux-10.0-x86_64-boot.iso",
         "iso_checksum": "a1549729bfb66a28e3546c953033c9928eae7280917bb1c490983dba3bb9941c",
-        "boot_command": "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/almalinux-10.ks<enter><wait>"
+        "boot_command": "<esc><wait><esc><wait>e<down><down><end> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/almalinux-10.ks<wait><f10>"
     },
     "builders": [
         {
