@@ -15,6 +15,9 @@
             "accelerator": "kvm",
             "headless": true,
             "cpus": 2,
+            "qemuargs": [
+                ["-cpu", "host,+nx"]
+            ],
             "memory": 2048,
             "disk_size": "8G",
             "disk_interface": "virtio-scsi",
