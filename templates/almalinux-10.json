@@ -63,13 +63,18 @@
         },
         {
             "type": "file",
-            "source": "files/centos/90-dhcp-client.conf",
-            "destination": "/etc/NetworkManager/conf.d/90-dhcp-client.conf"
+            "source": "files/centos/grub",
+            "destination": "/etc/default/grub"
         },
         {
             "type": "file",
-            "source": "files/centos/grub",
-            "destination": "/etc/default/grub"
+            "source": "files/patches/DataSourceCloudStack.patch",
+            "destination": "/tmp/DataSourceCloudStack.patch"
+        },
+        {
+            "type": "file",
+            "source": "files/patches/net_dhcp.patch",
+            "destination": "/tmp/net_dhcp.patch"
         },
         {
             "type": "shell",

@@ -61,6 +61,7 @@ wget
 -alsa-*
 -ivtv*
 -iwl*firmware
+patch
 %end
 
 # Post scripts

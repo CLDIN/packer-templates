@@ -25,6 +25,10 @@ systemctl enable cloud-init cloud-config fstrim.timer qemu-guest-agent
 echo "Workaround cloud-init issue 5378"
 sed -i "s/    lease_file = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/    latest_address = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/" /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py
 
+# Fix Cloudstack datasource with patch file
+patch -u /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py -i /tmp/DataSourceCloudStack.patch
+patch -u /usr/lib/python*/site-packages/cloudinit/net/dhcp.py -i /tmp/net_dhcp.patch
+
 echo "Cleaning up cloud-init"
 find /var/log -type f -name 'cloud-init*.log' -print -delete
 cloud-init clean -s -l
@@ -37,6 +41,8 @@ sed -i 's|^ *PasswordAuthentication .*|PasswordAuthentication no|g' /etc/ssh/ssh
 
 echo "Deleting existing ssh host keys"
 rm -f /etc/ssh/ssh_host*
+
+yum -y remove patch
 
 unset HISTFILE
 
