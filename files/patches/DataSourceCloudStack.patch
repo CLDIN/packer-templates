@@ -1,0 +1,60 @@
+--- /tmp/Original_CS	2025-06-20 16:02:25.356372941 +0200
++++ /tmp/New_CS	2025-06-20 16:06:33.674893912 +0200
+@@ -24,6 +24,7 @@
+ from cloudinit import util
+ from cloudinit.net import dhcp
+ from cloudinit.sources.helpers import ec2
++import cloudinit.net as cloudinit_net
+
+ LOG = logging.getLogger(__name__)
+
+@@ -127,9 +128,15 @@
+             self.distro.dhcp_client.client_name,
+         )
+
++        for candidate_nic in cloudinit_net.find_candidate_nics():
++            domain_name = dhcp.networkmanager_get_option_from_leases(candidate_nic, "domain_name")
++            if domain_name:
++                return domain_name
++
++
+         # If no distro leases were found, check the ephemeral lease that
+         # cloud-init set up.
+-        with suppress(FileNotFoundError):
++        with suppress(FileNotFoundError, dhcp.NoDHCPLeaseError):
+             latest_lease = self.distro.dhcp_client.get_newest_lease(
+                 self.distro.fallback_interface
+             )
+@@ -313,15 +321,23 @@
+             LOG.debug("Found SERVER_ADDRESS '%s' via dhclient", latest_address)
+             return latest_address
+
+-    with suppress(FileNotFoundError):
+-        latest_lease = distro.dhcp_client.get_newest_lease(distro)
+-        if latest_lease:
+-            LOG.debug(
+-                "Found SERVER_ADDRESS '%s' via ephemeral %s lease ",
+-                latest_lease,
+-                distro.dhcp_client.client_name,
+-            )
+-            return latest_lease
++    for candidate_nic in cloudinit_net.find_candidate_nics():
++        current_lease = dhcp.networkmanager_get_option_from_leases(candidate_nic, "dhcp_server_identifier")
++        if current_lease:
++            LOG.debug("Fount SERVER_ADDRESS '%s' via NetworkManager lease", current_lease)
++            return current_lease
++
++    with suppress(FileNotFoundError, dhcp.NoDHCPLeaseError):
++        for candidate_nic in cloudinit_net.find_candidate_nics():
++            LOG.debug(f"Checking dhcp server on interface {candidate_nic}")
++            latest_lease = distro.dhcp_client.get_newest_lease(candidate_nic).get("dhcp-server-identifier")
++            if latest_lease:
++                LOG.debug(
++                    "Found SERVER_ADDRESS '%s' via ephemeral %s lease ",
++                    latest_lease,
++                    distro.dhcp_client.client_name,
++                )
++                return latest_lease
+
+     # No virtual router found, fallback to default gateway
+     LOG.debug("No DHCP found, using default gateway")

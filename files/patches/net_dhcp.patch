@@ -1,0 +1,14 @@
+--- /tmp/Original_dhcp	2025-06-20 16:04:10.515692739 +0200
++++ /tmp/New_dhcp	2025-06-20 16:07:27.044626882 +0200
+@@ -144,6 +144,11 @@
+             return data[keyname]
+     return None
+
++def networkmanager_get_option_from_leases(interface: str, keyname: str):
++    dhcp_lease = subp.subp(["nmcli", "-t", "-f=DHCP4", "connection", "show", interface]).stdout
++    lease = dict(["".join(a.split(":", maxsplit=1)[1].split()).split("=", maxsplit=1) for a in dhcp_lease.strip().replace("'", "").split("\n")])
++    return lease.get(keyname)
++
+
+ class DhcpClient(abc.ABC):
+     client_name = ""

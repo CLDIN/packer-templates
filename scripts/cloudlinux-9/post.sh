@@ -4,9 +4,14 @@ set -xe
 echo "Remove DHCP leases"
 find /var/lib -type f -name '*.lease' -print -delete
 
-echo "Configurating network interface"
-mv /etc/sysconfig/network-scripts/ifcfg-ens4 /etc/sysconfig/network-scripts/ifcfg-ens3
-sed -i 's|ens[0-9]|ens3|g' /etc/sysconfig/network-scripts/ifcfg-ens3
+#packer sees ens4, cloudstack ens3. So we need to prepare ens3.
+echo "Configuring network interface"
+nmcli con add connection.interface-name ens3 type ethernet connection.id ens3
+nmcli connection modify ens3 autoconnect yes
+
+echo "Set NetworkManager global ipv6 address generation mode to eui64"
+echo "[connection]" | tee -a /etc/NetworkManager/NetworkManager.conf
+echo "ipv6.addr-gen-mode=0" | tee -a /etc/NetworkManager/NetworkManager.conf
 
 echo "Configuring DNS"
 find /etc -maxdepth 1 -type l -name 'resolv.conf' -print -delete
@@ -18,6 +23,10 @@ systemctl enable cloud-init cloud-config fstrim.timer qemu-guest-agent
 
 echo "Generating GRUB"
 grub2-mkconfig -o /boot/grub2/grub.cfg
+
+#[cloudinit dhcp/datasource issue](https://github.com/canonical/cloud-init/issues/5378)
+echo "Workaround cloud-init issue 5378"
+sed -i "s/    lease_file = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/    latest_address = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/" /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py
 
 echo "Cleaning up cloud-init"
 find /var/log -type f -name 'cloud-init*.log' -print -delete
