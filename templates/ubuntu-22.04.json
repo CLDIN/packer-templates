@@ -13,6 +13,8 @@
             "format": "qcow2",
             "accelerator": "kvm",
             "headless": true,
+            "shutdown_timeout": "15s",
+            "shutdown_command": "echo '58p5wMfpyTQhqa4Q' | sudo -S shutdown -P now",
             "cpus": 2,
             "memory": 2048,
             "disk_size": "8G",
