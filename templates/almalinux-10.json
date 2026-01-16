@@ -14,6 +14,8 @@
             "format": "qcow2",
             "accelerator": "kvm",
             "headless": true,
+            "shutdown_timeout": "15s",
+            "shutdown_command": "echo 'RvHtrfTwCjTnhHrD' | sudo -S shutdown -P now",
             "cpus": 2,
             "qemuargs": [
                 ["-cpu", "host,+nx"]
