@@ -36,7 +36,7 @@ default:
 # Publish a built template by uploading it to an S3 bucket, the objects are prefixed with the name of the branch/tag
 .upload_template:
     stage: publish
-    image: "ubuntu:20.04"
+    image: "ubuntu:24.04"
     dependencies:
         - build:${TEMPLATE_NAME}  # Match the exact build job name
     rules:
@@ -150,19 +150,6 @@ publish:debian-12:
         - build:debian-12
     variables:
         TEMPLATE_NAME: "debian-12"
-
-## Ubuntu 20.04
-build:ubuntu-20.04:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "ubuntu-20.04"
-
-publish:ubuntu-20.04:
-    extends: .upload_template
-    dependencies:
-        - build:ubuntu-20.04
-    variables:
-        TEMPLATE_NAME: "ubuntu-20.04"
 
 ## Ubuntu 22.04
 build:ubuntu-22.04:
