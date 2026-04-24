@@ -10,169 +10,31 @@ default:
     tags:
         - docker
 
-# This job template defines the build for a single OS template
-# The rules attached here make sure that templates are only (re)build on changes to their or shared files.
-.build_template:
-    stage: build
-    tags:
-        - virt
-        - packer
-    artifacts:
-        paths:
-            - build_${TEMPLATE_NAME}/
-    script:
-        - make build NAME=${TEMPLATE_NAME}
-    rules:
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-          changes:
-            - .gitlab-ci.yml
-            - Makefile
-            - files/**/*
-            - templates/${TEMPLATE_NAME}.json
-            - tpl/**/*
-            - scripts/**/*
-
-# Publish a built template by uploading it to an S3 bucket, the objects are prefixed with the name of the branch/tag
-.upload_template:
-    stage: publish
-    image: "ubuntu:24.04"
-    dependencies:
-        - build:${TEMPLATE_NAME}  # Match the exact build job name
-    rules:
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-          when: on_success
-    script:
-        - find . -type f
-        - apt-get update
-        - apt-get -y install s3cmd curl
-        - echo "[default]"|tee ${S3CFG} > /dev/null
-        - echo "access_key = ${OBJECTS_ACCESS_KEY}"|tee -a ${S3CFG} > /dev/null
-        - echo "secret_key = ${OBJECTS_SECRET_KEY}"|tee -a ${S3CFG} > /dev/null
-        - echo "host_bucket = %(bucket)s.${OBJECTS_HOST}"|tee -a ${S3CFG} > /dev/null
-        - echo "host_base = ${OBJECTS_HOST}"|tee -a ${S3CFG} > /dev/null
-        - echo "use_https = False"|tee -a ${S3CFG} > /dev/null
-        - s3cmd -c ${S3CFG} put -P --no-preserve build_${TEMPLATE_NAME}/${TEMPLATE_NAME}.json s3://${OBJECTS_BUCKET}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.json
-        - s3cmd -c ${S3CFG} put -P --no-preserve build_${TEMPLATE_NAME}/${TEMPLATE_NAME}.checksum s3://${OBJECTS_BUCKET}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.checksum
-        - s3cmd -c ${S3CFG} put -P --no-preserve build_${TEMPLATE_NAME}/${TEMPLATE_NAME}.qcow2 s3://${OBJECTS_BUCKET}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.qcow2
-        - sleep 5
-        - curl -I http://${OBJECTS_BUCKET}.${OBJECTS_HOST}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.checksum
-        - curl -I http://${OBJECTS_BUCKET}.${OBJECTS_HOST}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.json
-        - curl -I http://${OBJECTS_BUCKET}.${OBJECTS_HOST}/templates/${TEMPLATE_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHORT_SHA}.qcow2
-
-# AlmaLinux 8
-build:almalinux-8:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "almalinux-8"
-
-publish:almalinux-8:
-    extends: .upload_template
-    dependencies:
-        - build:almalinux-8
-    variables:
-        TEMPLATE_NAME: "almalinux-8"
-
-# AlmaLinux 9
-build:almalinux-9:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "almalinux-9"
-
-publish:almalinux-9:
-    extends: .upload_template
-    dependencies:
-        - build:almalinux-9
-    variables:
-        TEMPLATE_NAME: "almalinux-9"
-
-# AlmaLinux 10
-build:almalinux-10:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "almalinux-10"
-
-publish:almalinux-10:
-    extends: .upload_template
-    dependencies:
-        - build:almalinux-10
-    variables:
-        TEMPLATE_NAME: "almalinux-10"
-
-# CloudLinux 8
-build:cloudlinux-8:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "cloudlinux-8"
-
-publish:cloudlinux-8:
-    extends: .upload_template
-    dependencies:
-        - build:cloudlinux-8
-    variables:
-        TEMPLATE_NAME: "cloudlinux-8"
-
-# CloudLinux 9
-build:cloudlinux-9:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "cloudlinux-9"
-
-publish:cloudlinux-9:
-    extends: .upload_template
-    dependencies:
-        - build:cloudlinux-9
-    variables:
-        TEMPLATE_NAME: "cloudlinux-9"
-
-## Debian 11
-build:debian-11:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "debian-11"
-
-publish:debian-11:
-    extends: .upload_template
-    dependencies:
-        - build:debian-11
-    variables:
-        TEMPLATE_NAME: "debian-11"
-
-## Debian 12
-build:debian-12:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "debian-12"
-
-publish:debian-12:
-    extends: .upload_template
-    dependencies:
-        - build:debian-12
-    variables:
-        TEMPLATE_NAME: "debian-12"
-
-## Ubuntu 22.04
-build:ubuntu-22.04:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "ubuntu-22.04"
-
-publish:ubuntu-22.04:
-    extends: .upload_template
-    dependencies:
-        - build:ubuntu-22.04
-    variables:
-        TEMPLATE_NAME: "ubuntu-22.04"
-
-## Ubuntu 24.04
-build:ubuntu-24.04:
-    extends: .build_template
-    variables:
-        TEMPLATE_NAME: "ubuntu-24.04"
-
-publish:ubuntu-24.04:
-    extends: .upload_template
-    dependencies:
-        - build:ubuntu-24.04
-    variables:
-        TEMPLATE_NAME: "ubuntu-24.04"
+include:
+    - local: template_build.yml
+      inputs:
+        template_name: almalinux-8
+    - local: template_build.yml
+      inputs:
+        template_name: almalinux-9
+    - local: template_build.yml
+      inputs:
+        template_name: almalinux-10
+    - local: template_build.yml
+      inputs:
+        template_name: cloudlinux-8
+    - local: template_build.yml
+      inputs:
+        template_name: cloudlinux-9
+    - local: template_build.yml
+      inputs:
+        template_name: debian-11
+    - local: template_build.yml
+      inputs:
+        template_name: debian-12
+    - local: template_build.yml
+      inputs:
+        template_name: ubuntu-22.04
+    - local: template_build.yml
+      inputs:
+        template_name: ubuntu-24.04
