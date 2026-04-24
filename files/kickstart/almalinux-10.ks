@@ -1,6 +1,6 @@
 url --url https://repo.almalinux.org/almalinux/10/BaseOS/x86_64/kickstart/
 repo --name=BaseOS --baseurl=https://repo.almalinux.org/almalinux/10/BaseOS/x86_64/os/
-repo --name=AppStream --baseurl=https://repo.almalinux.org/almalinux/10/AppStream/x86_64/os/
+repo --name=AppStreamRepo --baseurl=https://repo.almalinux.org/almalinux/10/AppStream/x86_64/os/
 
 text
 skipx
