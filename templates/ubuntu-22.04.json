@@ -89,7 +89,7 @@
         },
         {
             "type": "file",
-            "source": "files/ubuntu-18-24/cve-2026-31431_disable-aead.conf",
+            "source": "files/debian/cve-2026-31431_disable-aead.conf",
             "destination": "/etc/modprobe.d/cve-2026-31431_disable-aead.conf"
         },
         {
