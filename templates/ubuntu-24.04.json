@@ -87,6 +87,11 @@
             "destination": "/etc/udev/rules.d/99-hotPlugCPU.rules"
         },
         {
+            "type": "file",
+            "source": "files/ubuntu-18-24/cve-2026-31431_disable-aead.conf",
+            "destination": "/etc/modprobe.d/cve-2026-31431_disable-aead.conf"
+        },
+        {
             "type": "shell",
             "scripts":
             [
