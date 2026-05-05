@@ -23,6 +23,7 @@ systemctl enable cloud-init cloud-config fstrim.timer qemu-guest-agent
 
 echo "Generating GRUB"
 grub2-mkconfig -o /boot/grub2/grub.cfg
+grubby --update-kernel=ALL --args="initcall_blacklist=algif_aead_init"
 
 #[cloudinit dhcp/datasource issue](https://github.com/canonical/cloud-init/issues/5378)
 echo "Workaround cloud-init issue 5378"

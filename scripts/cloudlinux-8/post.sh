@@ -18,6 +18,7 @@ systemctl enable cloud-init cloud-config fstrim.timer qemu-guest-agent
 
 echo "Generating GRUB"
 grub2-mkconfig -o /boot/grub2/grub.cfg
+grubby --update-kernel=ALL --args="initcall_blacklist=algif_aead_init"
 
 echo "Cleaning up cloud-init"
 find /var/log -type f -name 'cloud-init*.log' -print -delete
