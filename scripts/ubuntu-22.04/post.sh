@@ -31,6 +31,9 @@ mkdir /etc/systemd/resolved.conf.d
 echo "[Resolve]"|tee /etc/systemd/resolved.conf.d/10-dnssec.conf
 echo "DNSSEC=true"|tee -a /etc/systemd/resolved.conf.d/10-dnssec.conf
 
+echo "Removing dirtyfrag-compromised kernel modules"
+rmmod esp4 esp6 rxrpc
+
 echo "cleaning up udev rules"
 rm -f /etc/udev/rules.d/70-persistent-net.rules
 

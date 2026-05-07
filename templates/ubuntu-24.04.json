@@ -92,6 +92,11 @@
             "destination": "/etc/modprobe.d/cve-2026-31431_disable-aead.conf"
         },
         {
+            "type": "file",
+            "source": "files/debian/dirtyfrag_disable.conf",
+            "destination": "/etc/modprobe.d/dirtyfrag.conf"
+        },
+        {
             "type": "shell",
             "scripts":
             [

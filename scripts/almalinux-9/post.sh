@@ -25,6 +25,9 @@ echo "Generating GRUB configuration"
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grubby --update-kernel=ALL --args="initcall_blacklist=algif_aead_init"
 
+echo "Removing dirtyfrag-compromised kernel modules"
+rmmod esp4 esp6 rxrpc
+
 #[cloudinit dhcp/datasource issue](https://github.com/canonical/cloud-init/issues/5378)
 echo "Workaround cloud-init issue 5378"
 sed -i "s/    lease_file = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/    latest_address = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/" /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py
