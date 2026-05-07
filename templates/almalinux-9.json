@@ -74,6 +74,11 @@
             "destination": "/etc/default/grub"
         },
         {
+            "type": "file",
+            "source": "files/centos/dirtyfrag_disable.conf",
+            "destination": "/etc/modprobe.d/dirtyfrag.conf"
+        },
+        {
             "type": "shell",
             "scripts":
             [
