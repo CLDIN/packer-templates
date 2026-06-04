@@ -1,0 +1,5 @@
+deb http://nl3.archive.ubuntu.com/ubuntu resolute main restricted universe multiverse
+deb http://nl3.archive.ubuntu.com/ubuntu resolute-updates main restricted universe multiverse
+deb http://nl3.archive.ubuntu.com/ubuntu resolute-backports main restricted universe multiverse
+deb http://nl3.archive.ubuntu.com/ubuntu resolute-proposed main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu resolute-security main restricted universe multiverse

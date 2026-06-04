@@ -1,9 +1,8 @@
 {
     "variables": {
-        "name": "ubuntu-18.04",
-        "url": "http://compute.o.auroraobjects.eu/iso/ubuntu-18.04.5-server-amd64.iso",
-        "iso_checksum": "sha256:8c5fc24894394035402f66f3824beb7234b757dd2b5531379cb310cedfdf0996",
-        "boot_command": "<esc><wait><esc><wait><enter><wait>/install/vmlinuz initrd=/install/initrd.gz preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed/ubuntu-18.04.preseed auto debian-installer=en_US locale=en_US kbd-chooser/method=us fb=false debconf/frontend=noninteractive keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false hostname=ubuntu1804 -- <enter>"
+        "name": "ubuntu-26.04",
+        "url": "http://compute.o.auroraobjects.eu/iso/ubuntu-26.04-live-server-amd64.iso",
+        "iso_checksum": "sha256:dec49008a71f6098d0bcfc822021f4d042d5f2db279e4d75bdd981304f1ca5d9"
     },
     "builders": [
         {
@@ -15,20 +14,42 @@
             "accelerator": "kvm",
             "headless": true,
             "shutdown_timeout": "15s",
-            "shutdown_command": "echo 'zCgwHD5hvtnWRaJX' | sudo -S shutdown -P now",
+            "shutdown_command": "echo '58p5wMfpyTQhqa4Q' | sudo -S shutdown -P now",
             "cpus": 2,
             "memory": 2048,
             "disk_size": "8G",
             "disk_interface": "virtio-scsi",
             "disk_discard": "unmap",
             "disk_compression": true,
-            "boot_command": "{{user `boot_command`}}",
+            "boot_wait": "2s",
+            "boot_command": [
+                "<esc><esc><esc><esc>e<wait>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del>",
+                "<del><del><del><del><del><del><del><del><del>",
+                "linux /casper/vmlinuz autoinstall ds=\"nocloud-net;seedfrom=http://{{.HTTPIP}}:{{.HTTPPort}}/\" ---<enter><wait>",
+                "initrd /casper/initrd<enter><wait>",
+                "boot<enter>",
+                "<enter><f10><wait>"
+            ],
             "communicator": "ssh",
             "vnc_bind_address": "[::]",
             "ssh_wait_timeout": "30m",
             "ssh_username": "root",
-            "ssh_password": "zCgwHD5hvtnWRaJX",
-            "http_directory": "files",
+            "ssh_password": "58p5wMfpyTQhqa4Q",
+            "ssh_handshake_attempts": "200",
+            "http_directory": "files/ubuntu-26.04",
             "http_port_min": 8000,
             "http_port_max": 8100,
             "output_directory": "build_{{user `name`}}"
@@ -37,8 +58,8 @@
     "provisioners": [
         {
             "type": "file",
-            "source": "files/apt/ubuntu-18.04.sources",
-            "destination": "/etc/apt/sources.list"
+            "source": "files/apt/ubuntu-26.04.sources",
+            "destination": "/etc/apt/sources.d/ubuntu.sources"
         },
         {
             "type": "file",
@@ -49,6 +70,11 @@
             "type": "file",
             "source": "files/generic/watchdog.conf",
             "destination": "/etc/watchdog.conf"
+        },
+        {
+            "type": "file",
+            "source": "files/ubuntu-26.04/01-netcfg.yaml",
+            "destination": "/etc/netplan/01-netcfg.yaml"
         },
         {
             "type": "file",
@@ -74,7 +100,7 @@
             "type": "shell",
             "scripts":
             [
-                "scripts/ubuntu-18.04/remove-swap.sh"
+                "scripts/ubuntu-26.04/remove-swap.sh"
             ],
             "execute_command": "sh '{{.Path}}'"
         },
@@ -82,9 +108,9 @@
             "type": "shell",
             "scripts":
             [
-                "scripts/ubuntu-18.04/post.sh"
+                "scripts/ubuntu-26.04/post.sh"
             ],
-            "execute_command": "sh '{{.Path}}'"
+            "execute_command": "sudo sh '{{.Path}}'"
         },
         {
             "type": "shell",
