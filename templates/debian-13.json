@@ -1,9 +1,9 @@
 {
     "variables": {
-        "name": "debian-10",
-        "url": "http://compute.o.auroraobjects.eu/iso/debian-10.7.0-amd64-netinst.iso",
-        "iso_checksum": "sha256:b317d87b0a3d5b568f48a92dcabfc4bc51fe58d9f67ca13b013f1b8329d1306d",
-        "boot_command": "<esc><wait5>install <wait> preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed/debian-10.preseed debian-installer=en_US auto locale=en_US kbd-chooser/method=us keyboard-configuration/xkb-keymap=us netcfg/get_hostname=debian10 netcfg/get_domain=auroracompute.com fb=false debconf/frontend=noninteractive console-setup/ask_detect=false <wait> console-keymaps-at/keymap=us <wait><enter>"
+        "name": "debian-13",
+        "url": "http://compute.o.auroraobjects.eu/iso/debian-13.5.0-amd64-netinst.iso",
+        "iso_checksum": "sha256:95838884f5ea6c82421dfe6baaa5a639dbbe6756c1e380f9fe7a7cb0c1949d2a",
+        "boot_command": "<wait5><esc>auto preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed/debian-12.preseed<enter>"
     },
     "builders": [
         {
@@ -15,7 +15,7 @@
             "accelerator": "kvm",
             "headless": true,
             "shutdown_timeout": "15s",
-            "shutdown_command": "echo 'PVT6HXW4t7PDy7Pb' | sudo -S shutdown -P now",
+            "shutdown_command": "echo '4pDfYXPDfTrmPy9U' | sudo -S shutdown -P now",
             "cpus": 2,
             "memory": 2048,
             "disk_size": "8G",
@@ -27,7 +27,7 @@
             "vnc_bind_address": "[::]",
             "ssh_wait_timeout": "30m",
             "ssh_username": "root",
-            "ssh_password": "PVT6HXW4t7PDy7Pb",
+            "ssh_password": "4pDfYXPDfTrmPy9U",
             "http_directory": "files",
             "http_port_min": 8000,
             "http_port_max": 8100,
@@ -37,7 +37,7 @@
     "provisioners": [
         {
             "type": "file",
-            "source": "files/apt/debian-10.sources",
+            "source": "files/apt/debian-13.sources",
             "destination": "/etc/apt/sources.list"
         },
         {
@@ -74,7 +74,7 @@
             "type": "shell",
             "scripts":
             [
-                "scripts/debian-10/post.sh"
+                "scripts/debian-13/post.sh"
             ],
             "execute_command": "sh '{{.Path}}'"
         },

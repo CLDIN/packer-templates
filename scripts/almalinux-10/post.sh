@@ -19,15 +19,12 @@ echo "nameserver 2a00:f10:ff04:153::53"|tee /etc/resolv.conf
 echo "nameserver 2a00:f10:ff04:253::53"|tee -a /etc/resolv.conf
 
 echo "Enabling systemd services"
-systemctl enable cloud-init cloud-config fstrim.timer qemu-guest-agent
+systemctl enable cloud-init cloud-config fstrim.timer
+systemctl enable qemu-guest-agent || true
 
 echo "Generating GRUB configuration"
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grubby --update-kernel=ALL --args="initcall_blacklist=algif_aead_init"
-
-#[cloudinit dhcp/datasource issue](https://github.com/canonical/cloud-init/issues/5378)
-echo "Workaround cloud-init issue 5378"
-sed -i "s/    lease_file = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/    latest_address = dhcp.IscDhclient.parse_dhcp_server_from_lease_file/" /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py
 
 # Fix Cloudstack datasource with patch file
 patch -u /usr/lib/python*/site-packages/cloudinit/sources/DataSourceCloudStack.py -i /tmp/DataSourceCloudStack.patch

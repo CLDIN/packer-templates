@@ -75,7 +75,7 @@
         },
         {
             "type": "file",
-            "source": "files/patches/DataSourceCloudStack.patch",
+            "source": "files/patches/almalinux-10/DataSourceCloudStack.patch",
             "destination": "/tmp/DataSourceCloudStack.patch"
         },
         {

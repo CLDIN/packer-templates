@@ -34,7 +34,13 @@ include:
         template_name: debian-12
     - local: template_build.yml
       inputs:
-        template_name: ubuntu-22.04
+        template_name: debian-13
+    - local: template_build.yml
+      inputs:
+       template_name: ubuntu-22.04
     - local: template_build.yml
       inputs:
         template_name: ubuntu-24.04
+    - local: template_build.yml
+      inputs:
+        template_name: ubuntu-26.04

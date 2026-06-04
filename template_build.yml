@@ -28,11 +28,15 @@ build:$[[ inputs.template_name ]]:
             - templates/$[[ inputs.template_name ]].json
             - tpl/**/*
             - scripts/**/*
-
+    after_script:
+    - |
+      if [ "$CI_JOB_STATUS" == "failed" ]; then
+        find . -name '*.rej' -exec echo "--- {} ---" \; -exec cat {} \;
+      fi
 # Publish a built template by uploading it to an S3 bucket, the objects are prefixed with the name of the branch/tag
 publish:$[[ inputs.template_name ]]:
     stage: publish
-    image: "ubuntu:24.04"
+    image: "ubuntu:26.04"
     dependencies:
         - build:$[[ inputs.template_name ]]  # Match the exact build job name
     rules:
